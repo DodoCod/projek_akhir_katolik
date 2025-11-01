@@ -29,10 +29,6 @@ class User extends HiveObject {
   @HiveField(5)
   final bool isPremium;
 
-  /// Tanggal kadaluarsa keanggotaan premium (Opsional)
-  @HiveField(6)
-  final DateTime? premiumExpiry;
-
   User({
     required this.username,
     required this.password,
@@ -40,7 +36,6 @@ class User extends HiveObject {
     required this.id,
     required this.createdAt,
     this.isPremium = false,
-    this.premiumExpiry,
   });
 
   /// Membuat instance User dari Map (misalnya dari SharedPreferences atau API).
@@ -53,10 +48,6 @@ class User extends HiveObject {
       // Parsing String ISO 8601 menjadi DateTime
       createdAt: DateTime.parse(map['createdAt'] ?? DateTime.now().toIso8601String()), 
       isPremium: map['isPremium'] ?? false,
-      // Memeriksa dan parsing tanggal kadaluarsa premium
-      premiumExpiry: map['premiumExpiry'] != null 
-          ? DateTime.parse(map['premiumExpiry'])
-          : null,
     );
   }
 
@@ -80,7 +71,6 @@ class User extends HiveObject {
     String? id,
     DateTime? createdAt,
     bool? isPremium,
-    DateTime? premiumExpiry,
   }) {
     return User(
       username: username ?? this.username,
@@ -89,7 +79,6 @@ class User extends HiveObject {
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       isPremium: isPremium ?? this.isPremium,
-      premiumExpiry: premiumExpiry ?? this.premiumExpiry,
     );
   }
 }
