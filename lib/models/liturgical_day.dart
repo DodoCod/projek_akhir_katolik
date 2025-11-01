@@ -1,27 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Merepresentasikan referensi bacaan tunggal (misal: "Kejadian 1:1-5").
-class ReadingReference {
-  /// Tipe bacaan (e.g., 'first_reading', 'gospel', 'responsorial_psalm').
-  final String type;
-  
-  /// Sumber referensi Alkitab (e.g., "John 3:16").
-  final String source;
-
-  ReadingReference({
-    required this.type, 
-    required this.source
-  });
-
-  /// Membuat instance ReadingReference dari Map (JSON).
-  factory ReadingReference.fromJson(Map<String, dynamic> json) {
-    return ReadingReference(
-      type: json['type'] ?? 'Reading',
-      source: json['source'] ?? 'Unknown',
-    );
-  }
-}
-
 /// Merepresentasikan Hari Liturgi tertentu, berisi detail perayaan dan bacaan.
 class LiturgicalDay {
   final String date;
