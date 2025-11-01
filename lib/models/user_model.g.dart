@@ -23,14 +23,13 @@ class UserAdapter extends TypeAdapter<User> {
       id: fields[3] as String,
       createdAt: fields[4] as DateTime,
       isPremium: fields[5] as bool,
-      premiumExpiry: fields[6] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.username)
       ..writeByte(1)
@@ -42,9 +41,7 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(4)
       ..write(obj.createdAt)
       ..writeByte(5)
-      ..write(obj.isPremium)
-      ..writeByte(6)
-      ..write(obj.premiumExpiry);
+      ..write(obj.isPremium);
   }
 
   @override

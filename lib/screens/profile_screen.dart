@@ -256,17 +256,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: user.isPremiumActive 
+                                    color: user.isPremium 
                                         ? AppColors.amber30 
                                         : AppColors.white20,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    user.membershipTier, 
+                                    user.isPremium ? 'Premium' : 'Gratis', 
                                     style: GoogleFonts.poppins(
                                       fontSize: 14,
-                                      color: user.isPremiumActive ? Colors.amber : AppColors.white90,
-                                      fontWeight: user.isPremiumActive ? FontWeight.bold : FontWeight.normal
+                                      color: user.isPremium ? Colors.amber : AppColors.white90,
+                                      fontWeight: user.isPremium ? FontWeight.bold : FontWeight.normal
                                     ),
                                   ),
                                 ),
@@ -293,8 +293,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Row(
                                     children: [
                                       Icon(
-                                        user.isPremiumActive ? Icons.notifications_active_rounded : Icons.lock_outline_rounded, 
-                                        color: user.isPremiumActive ? Colors.cyan : Colors.white70, 
+                                        user.isPremium ? Icons.notifications_active_rounded : Icons.lock_outline_rounded, 
+                                        color: user.isPremium ? Colors.cyan : Colors.white70, 
                                         size: 20
                                       ),
                                       const SizedBox(width: 12),
@@ -315,10 +315,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 _buildMenuItem(
                                   icon: Icons.calendar_today_rounded,
                                   title: 'Jadwalkan Angelus',
-                                  iconColor: user.isPremiumActive ? Colors.green : Colors.grey,
-                                  trailingIcon: user.isPremiumActive ? null : Icons.lock,
+                                  iconColor: user.isPremium ? Colors.green : Colors.grey,
+                                  trailingIcon: user.isPremium ? null : Icons.lock,
                                   onTap: () {
-                                    if (user.isPremiumActive) {
+                                    if (user.isPremium) {
                                       _scheduleAngelus();
                                     } else {
                                       _handlePremiumNavigation(user); // Buka Paywall
@@ -331,10 +331,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 _buildMenuItem(
                                   icon: Icons.notifications_off_outlined,
                                   title: 'Hentikan Notifikasi Angelus',
-                                  iconColor: user.isPremiumActive ? Colors.orange : Colors.grey,
-                                  trailingIcon: user.isPremiumActive ? null : Icons.lock,
+                                  iconColor: user.isPremium ? Colors.orange : Colors.grey,
+                                  trailingIcon: user.isPremium ? null : Icons.lock,
                                   onTap: () {
-                                    if (user.isPremiumActive) {
+                                    if (user.isPremium) {
                                       _cancelAngelus();
                                     } else {
                                       _handlePremiumNavigation(user); // Buka Paywall
@@ -344,7 +344,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Divider(height: 1, color: AppColors.white10),
 
                                 // Tombol Batal Berlangganan (Hanya jika premium)
-                                if(user.isPremiumActive) ...[
+                                if(user.isPremium) ...[
                                   Divider(
                                     height: 1,
                                     color: AppColors.white10,

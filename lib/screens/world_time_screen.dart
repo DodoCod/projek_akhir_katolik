@@ -45,7 +45,7 @@ class _WorldTimeScreenState extends State<WorldTimeScreen> {
   ];
 
   /// Getter untuk memeriksa apakah pengguna memiliki keanggotaan Premium aktif.
-  bool get isPremium => _currentUser?.isPremiumActive ?? false;
+  bool get isPremium => _currentUser?.isPremium?? false;
 
   @override
   void initState() {
