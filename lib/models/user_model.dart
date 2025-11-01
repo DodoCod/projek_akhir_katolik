@@ -69,8 +69,6 @@ class User extends HiveObject {
       'id': id,
       'createdAt': createdAt.toIso8601String(),
       'isPremium': isPremium,
-      // Mengkonversi DateTime ke String ISO 8601 (Jika tidak null)
-      'premiumExpiry': premiumExpiry?.toIso8601String(),
     };
   }
 
@@ -93,20 +91,5 @@ class User extends HiveObject {
       isPremium: isPremium ?? this.isPremium,
       premiumExpiry: premiumExpiry ?? this.premiumExpiry,
     );
-  }
-
-  /// Getter untuk memeriksa apakah status premium saat ini AKTIF (belum kadaluarsa).
-  bool get isPremiumActive {
-    // 1. Harus memiliki flag isPremium TRUE
-    if (!isPremium) return false;
-    // 2. Harus memiliki tanggal kadaluarsa
-    if (premiumExpiry == null) return false;
-    // 3. Tanggal kadaluarsa harus LEBIH dari waktu saat ini
-    return premiumExpiry!.isAfter(DateTime.now());
-  }
-
-  /// Getter untuk mendapatkan status keanggotaan dalam format String.
-  String get membershipTier {
-    return isPremiumActive ? 'Premium' : 'Gratis';
   }
 }
