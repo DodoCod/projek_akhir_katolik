@@ -17,7 +17,6 @@ class LiturgicalDay {
   });
 
   /// Membuat instance LiturgicalDay dari Map (respons API).
-  /// Asumsi: Data perayaan (celebrations) berada di dalam json['celebrations'][0].
   factory LiturgicalDay.fromJson(Map<String, dynamic> json) {
     try {
       if (!json.containsKey('celebrations') || json['celebrations'].isEmpty) {
