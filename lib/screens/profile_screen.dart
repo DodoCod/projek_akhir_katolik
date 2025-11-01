@@ -151,18 +151,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void _checkPending() async {
-    final pending = await NotificationService.getPendingNotifications();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${pending.length} notifikasi terjadwal. Cek konsol debug.', style: GoogleFonts.poppins()),
-          backgroundColor: Colors.purple,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -354,21 +342,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   },
                                 ),
                                 Divider(height: 1, color: AppColors.white10),
-                                
-                                // Tombol Cek Notifikasi (Premium)
-                                _buildMenuItem(
-                                  icon: Icons.list_alt_rounded,
-                                  title: 'Cek Notifikasi (di Konsol)',
-                                  iconColor: user.isPremiumActive ? Colors.purpleAccent : Colors.grey,
-                                  trailingIcon: user.isPremiumActive ? null : Icons.lock,
-                                  onTap: () {
-                                    if (user.isPremiumActive) {
-                                      _checkPending();
-                                    } else {
-                                      _handlePremiumNavigation(user); // Buka Paywall
-                                    }
-                                  },
-                                ),
 
                                 // Tombol Batal Berlangganan (Hanya jika premium)
                                 if(user.isPremiumActive) ...[
