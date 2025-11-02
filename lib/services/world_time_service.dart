@@ -1,10 +1,7 @@
-// 📁 lib/services/world_time_service.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:projek_akhir_katolik/utils/constants.dart';
 
-// --- TimezoneInfo Model (Harus ada di file ini atau diimpor) ---
 /// Model data untuk menyimpan informasi Timezone real-time dari World Time API.
 class TimezoneInfo {
   final String timezone;
@@ -33,7 +30,6 @@ class TimezoneInfo {
       timezone: json['timezone'] ?? '',
       abbreviation: json['abbreviation'] ?? '',
       datetime: DateTime.parse(json['datetime']),
-      // Menghitung offset total (Raw + DST jika aktif)
       utcOffset: rawOffset + (isDst ? dstOffset : 0), 
       utcOffsetString: json['utc_offset'] ?? '+00:00',
     );
@@ -51,16 +47,11 @@ class TimezoneInfo {
     );
   }
 }
-// -----------------------------------------------------------------
-
-
-/// Layanan untuk mengambil data zona waktu dan mengkonversi waktu.
 class WorldTimeService {
   static final Map<String, TimezoneInfo> _cache = {};
   static const Duration _cacheDuration = Duration(minutes: 5);
 
   /// Mengambil info waktu real-time dan offset dari World Time API.
-  /// Data disimpan dalam cache selama _cacheDuration.
   static Future<TimezoneInfo?> getTimezoneInfo(String timezone) async {
     // Cek cache dulu
     if (_cache.containsKey(timezone)) {
@@ -92,8 +83,7 @@ class WorldTimeService {
     }
   }
 
-  /// Mengambil info waktu untuk beberapa zona sekaligus.
-  /// Jika fetch API gagal, mengembalikan data fallback (hardcoded offset).
+  // Mengambil info waktu untuk beberapa zona sekaligus.
   static Future<Map<String, TimezoneInfo?>> getMultipleTimezones(
     List<String> timezones,
   ) async {
@@ -101,7 +91,7 @@ class WorldTimeService {
     for (final timezone in timezones) {
       result[timezone] = await getTimezoneInfo(timezone);
     }
-    // Tambahkan logika fallback untuk Jakarta dan Vatikan jika fetch API gagal
+    // logika fallback untuk Jakarta dan Vatikan jika fetch API gagal
     if (result['Asia/Jakarta'] == null) {
       result['Asia/Jakarta'] = _getFallbackTimezoneInfo('Asia/Jakarta');
     }
@@ -111,8 +101,6 @@ class WorldTimeService {
     return result;
   }
 
-  /// Mengkonversi waktu dari satu zona sumber ke zona target menggunakan offset API.
-  /// Jika data API hilang, menggunakan konversi fallback sinkron.
   static Future<DateTime?> convertTimeWithAPI({
     required DateTime sourceDateTime,
     required String sourceZone,
