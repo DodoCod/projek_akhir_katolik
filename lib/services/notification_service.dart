@@ -163,7 +163,7 @@ class NotificationService {
     final pending = await _notifications.pendingNotificationRequests();
     print('📋 Pending: ${pending.length}');
     for (var n in pending) {
-      print('  - ID: ${n.id}, Title: ${n.title}, Payload: ${n.payload}, Body: ${n.body}');
+      print('- ID: ${n.id}, Title: ${n.title}, Payload: ${n.payload}, Body: ${n.body}');
     }
     return pending;
   }
