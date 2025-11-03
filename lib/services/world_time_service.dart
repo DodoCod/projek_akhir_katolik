@@ -1,17 +1,13 @@
-// 📁 lib/services/world_time_service.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:projek_akhir_katolik/utils/constants.dart';
 
-// --- TimezoneInfo Model (Harus ada di file ini atau diimpor) ---
-/// Model data untuk menyimpan informasi Timezone real-time dari World Time API.
 class TimezoneInfo {
   final String timezone;
   final String abbreviation;
   final DateTime datetime;
-  final int utcOffset; // Offset dalam detik
-  final String utcOffsetString; // Format: "+07:00"
+  final int utcOffset; 
+  final String utcOffsetString; 
   final DateTime fetchedAt; 
 
   TimezoneInfo({
@@ -23,7 +19,6 @@ class TimezoneInfo {
     DateTime? fetchedAt,
   }) : fetchedAt = fetchedAt ?? DateTime.now();
 
-  /// Membuat instance TimezoneInfo dari Map (JSON).
   factory TimezoneInfo.fromJson(Map<String, dynamic> json) {
     final rawOffset = json['raw_offset'] ?? 0;
     final dstOffset = json['dst_offset'] ?? 0;
@@ -33,13 +28,11 @@ class TimezoneInfo {
       timezone: json['timezone'] ?? '',
       abbreviation: json['abbreviation'] ?? '',
       datetime: DateTime.parse(json['datetime']),
-      // Menghitung offset total (Raw + DST jika aktif)
       utcOffset: rawOffset + (isDst ? dstOffset : 0), 
       utcOffsetString: json['utc_offset'] ?? '+00:00',
     );
   }
 
-  /// Membuat salinan objek dengan tanggal/waktu baru (digunakan untuk clock ticker).
   TimezoneInfo copyWithDateTime(DateTime newDateTime) {
     return TimezoneInfo(
       timezone: timezone,
@@ -51,16 +44,11 @@ class TimezoneInfo {
     );
   }
 }
-// -----------------------------------------------------------------
 
-
-/// Layanan untuk mengambil data zona waktu dan mengkonversi waktu.
 class WorldTimeService {
   static final Map<String, TimezoneInfo> _cache = {};
   static const Duration _cacheDuration = Duration(minutes: 5);
 
-  /// Mengambil info waktu real-time dan offset dari World Time API.
-  /// Data disimpan dalam cache selama _cacheDuration.
   static Future<TimezoneInfo?> getTimezoneInfo(String timezone) async {
     // Cek cache dulu
     if (_cache.containsKey(timezone)) {
@@ -83,17 +71,15 @@ class WorldTimeService {
         _cache[timezone] = info;
         return info;
       } else {
-        _cache.remove(timezone); // Hapus cache jika API error
+        _cache.remove(timezone);
         return null;
       }
     } catch (e) {
-      _cache.remove(timezone); // HAPUS CACHE JIKA KONEKSI GAGAL
+      _cache.remove(timezone); 
       return null;
     }
   }
 
-  /// Mengambil info waktu untuk beberapa zona sekaligus.
-  /// Jika fetch API gagal, mengembalikan data fallback (hardcoded offset).
   static Future<Map<String, TimezoneInfo?>> getMultipleTimezones(
     List<String> timezones,
   ) async {
@@ -111,8 +97,6 @@ class WorldTimeService {
     return result;
   }
 
-  /// Mengkonversi waktu dari satu zona sumber ke zona target menggunakan offset API.
-  /// Jika data API hilang, menggunakan konversi fallback sinkron.
   static Future<DateTime?> convertTimeWithAPI({
     required DateTime sourceDateTime,
     required String sourceZone,
@@ -126,12 +110,10 @@ class WorldTimeService {
         return convertTime(sourceDateTime: sourceDateTime, sourceZone: sourceZone, targetZone: targetZone); 
       }
 
-      // 1. Konversi ke UTC: (Waktu Sumber - Offset Sumber)
       final utcTime = sourceDateTime.subtract(
         Duration(seconds: sourceInfo.utcOffset),
       );
 
-      // 2. Konversi ke Target: (UTC + Offset Target)
       final targetTime = utcTime.add(
         Duration(seconds: targetInfo.utcOffset),
       );
