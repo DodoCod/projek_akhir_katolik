@@ -1,5 +1,3 @@
-// 📁 lib/screens/find_church_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projek_akhir_katolik/services/location_service.dart';
@@ -175,7 +173,7 @@ class _FindChurchScreenState extends State<FindChurchScreen> {
                   ),
                 ),
               
-              // Kolom Pencarian (Hanya muncul jika sudah ada data gereja)
+              // Kolom Pencarian 
               if (_allChurches.isNotEmpty || _searchQuery.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
@@ -285,7 +283,6 @@ class _FindChurchScreenState extends State<FindChurchScreen> {
                                   '$distanceInKm km',
                                   style: GoogleFonts.robotoMono(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
-                                // Cek apakah gereja ini ada di daftar awal (sebelum filter) DAN merupakan yang terdekat
                                 if (_allChurches.isNotEmpty && _allChurches[0].name == church.name) 
                                   Text('Terdekat', style: GoogleFonts.poppins(color: AppColors.success, fontSize: 10)), 
                               ],
