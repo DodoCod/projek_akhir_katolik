@@ -8,7 +8,7 @@ class FeedbackScreen extends StatelessWidget {
   final String _staticImpression = 
       'Cara mengajar Pak Bagus sangat santai dan mudah diikuti. Beliau sering memberikan contoh kehidupan nyata yang relevan, sehingga materi Mobile Programming yang sulit jadi terasa "nyambung". Interaksi di kelas juga sangat hidup!';
   final String _staticSuggestion = 
-      'Mungkin durasi praktikum bisa ditambah. Selain itu, akan sangat bermanfaat jika Pak Bagus dapat lebih banyak melakukan live code (pemrograman langsung) di kelas saat menjelaskan suatu konsep, bukan sekadar menjelaskan teori dari slide. Sesi live code sederhana ini, meskipun ada jadwal praktikum, akan sangat membantu menambah insight praktis dan pemahaman alur kerja koding yang sebenarnya.';
+      'Mungkin akan sangat bermanfaat jika Pak Bagus dapat lebih banyak melakukan live code (pemrograman langsung) di kelas saat menjelaskan suatu konsep, bukan sekadar menjelaskan teori dari slide. Sesi live code sederhana ini, meskipun ada jadwal praktikum, akan sangat membantu menambah insight praktis dan pemahaman alur kerja koding yang sebenarnya.';
   
   @override
   Widget build(BuildContext context) {
@@ -29,13 +29,6 @@ class FeedbackScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(AppDimensions.paddingLarge),
           children: <Widget>[
-            // HEADER & DESKRIPSI 
-            Text(
-              'Berikan masukan spesifik mengenai pengalaman belajar di kelas Pak Bagus. 👨‍🏫',
-              style: GoogleFonts.poppins(color: AppColors.white50, fontSize: 14),
-            ),
-            const SizedBox(height: AppDimensions.paddingLarge),
-
             // KARTU 1: KESAN POSITIF 
             _buildFeedbackCard(
               title: 'Kesan Umum (Pengalaman Mengajar)',
