@@ -281,7 +281,7 @@ class _FindChurchScreenState extends State<FindChurchScreen> {
                               children: [
                                 Text(
                                   '$distanceInKm km',
-                                  style: GoogleFonts.robotoMono(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                                 // Cek apakah gereja ini ada di daftar awal (sebelum filter) DAN merupakan yang terdekat
                                 if (_allChurches.isNotEmpty && _allChurches[0].name == church.name) 
