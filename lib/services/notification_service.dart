@@ -72,8 +72,8 @@ class NotificationService {
 
     await _scheduleDailyNotification(
       id: 2,
-      hour: 14,
-      minute: 0,
+      hour: 16,
+      minute: 05,
       title: '🙏 Angelus Siang',
       body: 'Waktunya berdoa Angelus (12:00 WIB)',
     );

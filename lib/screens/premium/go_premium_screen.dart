@@ -20,7 +20,7 @@ class _GoPremiumScreenState extends State<GoPremiumScreen> {
   late Future<Map<String, dynamic>> _ratesFuture;
   
   // Harga basis dalam USD
-  static const double _basePriceUSD = 5.0; 
+  static const double _basePriceUSD = 10.0; 
 
   // State untuk mata uang yang dipilih pengguna
   String _selectedCurrency = 'IDR';
