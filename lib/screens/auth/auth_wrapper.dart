@@ -12,7 +12,6 @@ class AuthWrapper extends StatefulWidget {
 }
 
 class _AuthWrapperState extends State<AuthWrapper> {
-  // Instance dari AuthService untuk mengecek status login.
   final AuthService _authService = AuthService();
   
   @override

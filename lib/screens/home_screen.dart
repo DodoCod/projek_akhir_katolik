@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projek_akhir_katolik/models/liturgical_day.dart';
+import 'package:projek_akhir_katolik/services/auth_service.dart';
 import 'package:projek_akhir_katolik/services/liturgy_service.dart';
 import 'package:projek_akhir_katolik/utils/constants.dart';
 import 'package:intl/intl.dart';
@@ -19,17 +20,62 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime _displayDate = DateTime.now();
   final PageController _pageController = PageController(initialPage: 0);
 
+  final auth = AuthService();
+  String username = 'Pengguna'; // Default value
+  bool isLoadingUsername = true;
+
   @override
   void initState() {
     super.initState();
     _liturgyFuture = _liturgyService.getTodaysLiturgy();
     _displayDate = DateTime.now();
+    _loadUsername();
+  }
+
+  // Method untuk load username dari SharedPreferences
+  Future<void> _loadUsername() async {
+    setState(() {
+      isLoadingUsername = true;
+    });
+    try {
+      print('🔵 [HOMESCREEN] Memulai _loadUsername...');
+      
+      // Coba ambil dari SharedPreferences
+      var name = await auth.getUsernameFromPrefs();
+      print('🟡 [HOMESCREEN] Hasil dari getUsernameFromPrefs: $name'); 
+      
+      // ✅ FALLBACK: Jika null, ambil dari Hive
+      if (name == null) {
+        print('🟡 [HOMESCREEN] Username null, mencoba ambil dari Hive...');
+        final user = await auth.getLoggedInUser();
+        if (user != null) {
+          name = user.username;
+          print('🟢 [HOMESCREEN] Username dari Hive: $name');
+          
+          // Simpan ke SharedPreferences untuk next time
+          await auth.saveUsernameToPrefs(name);
+        }
+      }
+      
+      setState(() {
+        username = name ?? 'Pengguna';
+        isLoadingUsername = false;
+      });
+      
+      print('🟢 [HOMESCREEN] Username final: $username');
+    } catch (e) {
+      print('🔴 [HOMESCREEN] Error saat _loadUsername: $e'); 
+      setState(() {
+        username = 'Pengguna';
+        isLoadingUsername = false;
+      });
+    }
   }
 
   void _loadLiturgyForDate(DateTime date) {
     setState(() {
-      _displayDate = date; 
-      _liturgyFuture = _liturgyService.getLiturgyForDate(date); 
+      _displayDate = date;
+      _liturgyFuture = _liturgyService.getLiturgyForDate(date);
     });
   }
 
@@ -44,11 +90,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final firstDay = DateTime(date.year, date.month, 1);
     final lastDay = DateTime(date.year, date.month + 1, 0);
     final days = <DateTime>[];
-    
+
     for (int i = 0; i < lastDay.day; i++) {
       days.add(firstDay.add(Duration(days: i)));
     }
-    
+
     return days;
   }
 
@@ -62,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final daysInMonth = _getDaysInMonth(_selectedDate);
     final startDay = _getStartDayOfWeek(_selectedDate);
     final today = DateTime.now();
-    
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
@@ -111,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
@@ -130,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 .toList(),
           ),
           const SizedBox(height: 8),
-          
+
           // Calendar Grid
           GridView.builder(
             shrinkWrap: true,
@@ -145,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (index < startDay) {
                 return const SizedBox();
               }
-              
+
               final dayIndex = index - startDay;
               final date = daysInMonth[dayIndex];
               final isToday = date.day == today.day &&
@@ -154,12 +200,11 @@ class _HomeScreenState extends State<HomeScreen> {
               final isSelected = date.day == _displayDate.day &&
                   date.month == _displayDate.month &&
                   date.year == _displayDate.year;
-              
+
               return GestureDetector(
                 onTap: () {
-                  _loadLiturgyForDate(date); 
+                  _loadLiturgyForDate(date);
                 },
-
                 child: Container(
                   decoration: BoxDecoration(
                     color: isSelected
@@ -271,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Info Warna Liturgi
             Container(
               padding: const EdgeInsets.all(12),
@@ -316,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),            
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -367,16 +412,78 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
+              // Welcome Message with Username from SharedPreferences
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.white15,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.white20,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.waving_hand,
+                        color: Colors.amber,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: isLoadingUsername
+                            ? Row(
+                                children: [
+                                  const SizedBox(
+                                    height: 16,
+                                    width: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Memuat data...',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Text(
+                                // Menggunakan username yang sudah dimuat
+                                'Halo $username!, jangan lupa beribadah hari ini yaa!',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
               // Content
               Expanded(
                 child: FutureBuilder<LiturgicalDay>(
-                  future: _liturgyFuture, 
+                  future: _liturgyFuture,
                   builder: (context, snapshot) {
                     // Loading State
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       );
                     }
@@ -432,10 +539,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: const Color(0xFF4A5568),
                         onRefresh: () async {
                           setState(() {
-                            // Refresh akan selalu kembali ke hari ini
                             _displayDate = DateTime.now();
                             _selectedDate = DateTime.now();
                             _liturgyFuture = _liturgyService.getTodaysLiturgy();
+                            _loadUsername(); // Muat ulang username saat refresh
                           });
                         },
                         child: SingleChildScrollView(
@@ -453,7 +560,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     }
-                    
+
                     return Center(
                       child: Text(
                         'Tidak ada data',

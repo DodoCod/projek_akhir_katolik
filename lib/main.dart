@@ -16,21 +16,18 @@ import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Hive
-  await Hive.initFlutter();
-  
-  // Register Adapters
-  if (!Hive.isAdapterRegistered(0)) {
-    Hive.registerAdapter(UserAdapter());
+  try {
+    await Hive.initFlutter();
+    
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(UserAdapter());
+    }
+
+    await AuthService.initialize();
+    await NotificationService.initialize();
+  } catch (e) {
+    log('Error during initialization: $e');
   }
-
-  // Initialize Auth Service
-  await AuthService.initialize();
-
-  // Initialize Notification Service
-  await NotificationService.initialize();
-  
-  log('✅ App initialized successfully');
 
   runApp(const MyApp());
 }
